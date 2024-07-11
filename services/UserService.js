@@ -102,9 +102,57 @@ const deleteUser = async (id) => {
     };
 }
 
+const getAllUsers = async () => {
+    const users = await db.User.findAll({
+        where: {
+            status: true,
+        },
+        attributes: { exclude: ['password'] }
+    });
+    return {
+        code: 200,
+        message: users,
+    };
+};
+
+const findUsers = async (filters) => {
+    const { name, deleted, loginAntes, loginDespues } = filters;
+    const whereClause = {};
+
+    if (deleted !== undefined) { //hacer la consulta deleted=true , lo que significara que el usuario esta eliminado y buscara el "false"
+        whereClause.status = deleted === 'true' ? false : true;
+    }
+    if (name) {
+        whereClause.name = {
+            [db.Sequelize.Op.like]: `%${name}%`
+        };
+    }
+    if (loginAntes) {
+        whereClause.createdAt = {
+            [db.Sequelize.Op.lte]: new Date(loginAntes)
+        };
+    }
+    if (loginDespues) {
+        whereClause.createdAt = {
+            [db.Sequelize.Op.gte]: new Date(loginDespues)
+        };
+    }
+
+    const users = await db.User.findAll({
+        where: whereClause,
+        attributes: { exclude: ['password'] }
+    });
+    return {
+        code: 200,
+        message: users,
+    };
+};
+
 export default {
     createUser,
     getUserById,
     updateUser,
     deleteUser,
+    getAllUsers,
+    findUsers,
 }
