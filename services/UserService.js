@@ -148,6 +148,53 @@ const findUsers = async (filters) => {
     };
 };
 
+const bulkCreateUsers = async (req) => {
+    const users = req.body;
+    let successCount = 0;
+    let failureCount = 0;
+
+    for (const user of users) {
+
+        const { name, email, password, password_second, cellphone } = user;
+        
+        if (password !== password_second) {
+            failureCount++;
+            continue;
+        }
+
+        const existingUser = await db.User.findOne({
+            where: {
+                email: email
+            }
+        });
+
+        if (existingUser) {
+            failureCount++;
+            continue;
+        }
+
+        const encryptedPassword = await bcrypt.hash(password, 10);
+
+        try {
+            await db.User.create({
+                name,
+                email,
+                password: encryptedPassword,
+                cellphone,
+                status: true
+            });
+            successCount++;
+        } catch (error) {
+            failureCount++;
+        }
+    }
+
+    return {
+        code: 200,
+        message: `Users created successfully: ${successCount}, Users not created: ${failureCount}`
+    };
+};
+
 export default {
     createUser,
     getUserById,
@@ -155,4 +202,5 @@ export default {
     deleteUser,
     getAllUsers,
     findUsers,
+    bulkCreateUsers,
 }
