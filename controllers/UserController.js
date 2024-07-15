@@ -23,7 +23,7 @@ router.get('/findUsers', async (req, res) => {
 
 router.post('/bulkCreate', async (req, res) => {
     try {
-        const response = await UserService.bulkCreateUsers(req);
+        const response = await UserService.bulkCreate(req);
         res.status(response.code).json(response.message);
     } catch (error) {
         console.error('Error handling bulkCreateUsers:', error);

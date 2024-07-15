@@ -148,7 +148,7 @@ const findUsers = async (filters) => {
     };
 };
 
-const bulkCreateUsers = async (req) => {
+const bulkCreate = async (req) => {
     const { users } = req.body;
     
     if (!Array.isArray(users)) {
@@ -195,11 +195,10 @@ const bulkCreateUsers = async (req) => {
         code: 200,
         message: `Users created successfully: ${successCount}, Users not created: ${failureCount}`
     };
-};
 
-/*ejemplo de prueba con postman 
+    /*ejemplo de prueba con postman 
 en 
-http://localhost:3001/api/v1/users/bulkCreateUsers
+http://localhost:3001/api/v1/users/bulkCreate
 
 {
     "users": [
@@ -219,8 +218,9 @@ http://localhost:3001/api/v1/users/bulkCreateUsers
         }
     ]
 }
-
 */
+};
+
 
 
 export default {
@@ -230,5 +230,5 @@ export default {
     deleteUser,
     getAllUsers,
     findUsers,
-    bulkCreateUsers,
+    bulkCreate,
 }
