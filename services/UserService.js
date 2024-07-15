@@ -150,8 +150,7 @@ const findUsers = async (filters) => {
 
 const bulkCreateUsers = async (req) => {
     const { users } = req.body;
-
-
+    
     if (!Array.isArray(users)) {
         return {
             code: 400,
@@ -198,6 +197,30 @@ const bulkCreateUsers = async (req) => {
     };
 };
 
+/*ejemplo de prueba con postman 
+en 
+http://localhost:3001/api/v1/users/bulkCreateUsers
+
+{
+    "users": [
+        {
+            "name": "Juan",
+            "email": "Juan@example.com",
+            "password": "4567",
+            "password_second": "4567",
+            "cellphone": "123456789"
+        },
+        {
+            "name": "Pedro",
+            "email": "Pedro@example.com",
+            "password": "1234",
+            "password_second": "1234",
+            "cellphone": "987654321"
+        }
+    ]
+}
+
+*/
 
 
 export default {
