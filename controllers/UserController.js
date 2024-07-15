@@ -21,9 +21,14 @@ router.get('/findUsers', async (req, res) => {
     res.status(response.code).json(response.message);
 });
 
-router.post('/bulkCreate', async (req, res) => {
-    const response = await UserService.bulkCreateUsers(req);
-    res.status(response.code).json(response.message);
+router.post('/bulkCreateUsers', async (req, res) => {
+    try {
+        const response = await UserService.bulkCreateUsers(req);
+        res.status(response.code).json(response.message);
+    } catch (error) {
+        console.error('Error handling bulkCreateUsers:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
 });
 
 

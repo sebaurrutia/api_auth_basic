@@ -149,33 +149,35 @@ const findUsers = async (filters) => {
 };
 
 const bulkCreateUsers = async (req) => {
-    const users = req.body;
+    const { users } = req.body;
+
+
+    if (!Array.isArray(users)) {
+        return {
+            code: 400,
+            message: 'Users should be provided as an array'
+        };
+    }
+
     let successCount = 0;
     let failureCount = 0;
 
     for (const user of users) {
-
         const { name, email, password, password_second, cellphone } = user;
-        
+
         if (password !== password_second) {
             failureCount++;
             continue;
         }
 
-        const existingUser = await db.User.findOne({
-            where: {
-                email: email
-            }
-        });
-
+        const existingUser = await db.User.findOne({ where: { email } });
         if (existingUser) {
             failureCount++;
             continue;
         }
 
-        const encryptedPassword = await bcrypt.hash(password, 10);
-
         try {
+            const encryptedPassword = await bcrypt.hash(password, 10);
             await db.User.create({
                 name,
                 email,
@@ -185,6 +187,7 @@ const bulkCreateUsers = async (req) => {
             });
             successCount++;
         } catch (error) {
+            console.error('Error creating user:', error);
             failureCount++;
         }
     }
@@ -194,6 +197,8 @@ const bulkCreateUsers = async (req) => {
         message: `Users created successfully: ${successCount}, Users not created: ${failureCount}`
     };
 };
+
+
 
 export default {
     createUser,
